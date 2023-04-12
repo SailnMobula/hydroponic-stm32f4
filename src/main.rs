@@ -7,7 +7,6 @@ use core::fmt::Write;
 use core::ops::DerefMut;
 use core::sync::atomic::{AtomicU32, Ordering};
 use cortex_m::interrupt::Mutex;
-use cortex_m::prelude::*;
 use cortex_m_rt::entry;
 use hydroponic_stm32f4::hydroponic::Hydroponic;
 // Halt on panic
@@ -18,7 +17,7 @@ use stm32f4xx_hal::pac::{TIM2, USART1};
 use stm32f4xx_hal::serial::Serial;
 use stm32f4xx_hal::timer::{CounterUs, Event, SysDelay};
 use stm32f4xx_hal::{
-    interrupt, nb,
+    interrupt,
     pac::{Interrupt, Peripherals},
     prelude::*,
     rcc::RccExt,
@@ -60,16 +59,10 @@ fn main() -> ! {
             match hydroponic.run(current_time_s, &mut delay) {
                 Ok((interval, temp, runned_at, is_running)) => {
                     writeln!(serial_tx, "Hydroponic running, current time: {}s, watering interval: {}s temp: {}°C last runned: {}, is running: {}\r", current_time_s, interval, temp, runned_at, is_running).unwrap();
-                    if let Err(e) = nb::block!(serial_tx.flush()) {
-                        writeln!(serial_tx, "Error while writing serial: {:?}\r", e).unwrap();
-                    };
                     led.ok();
                 }
                 Err(e) => {
                     writeln!(serial_tx, "Error while running hydroponic: {:?}\r", e).unwrap();
-                    if let Err(e) = nb::block!(serial_tx.flush()) {
-                        writeln!(serial_tx, "Error while writing serial: {:?}\r", e).unwrap();
-                    };
                     led.err(&mut delay);
                 }
             }
