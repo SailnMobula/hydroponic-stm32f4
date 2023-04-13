@@ -27,7 +27,7 @@ jobs:
       - name: Add Target
         run: rustup target add thumbv7em-none-eabihf
       - name: Run Clippy
-        run: cargo clippy --all-targets --all-features
+        run: cargo clippy --all-features -- -D warnings
 
   format:
     runs-on: ubuntu-latest
