@@ -16,8 +16,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Add Target
       run: rustup target add thumbv7em-none-eabihf
-    - name: Add cargo utils
-      run: cargo install cargo-binutils
     - name: Build
       run: cargo build --verbose
     
@@ -26,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Add Target
+        run: rustup target add thumbv7em-none-eabihf
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
